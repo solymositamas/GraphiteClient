@@ -12,6 +12,14 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        val target = "apps.fakesite.*.counters.requests.count"
+        val result = "summarize(apps.fakesite.web_server_02.counters.requests.count, \"1hour\", \"last\")"
+
+        println("${getTargetName(target, result)}")
+    }
+
+    fun getTargetName(target: String, result: String): String {
+        val idx = target.split(".").indexOf("*")
+        return result.split(".").get(idx)
     }
 }
