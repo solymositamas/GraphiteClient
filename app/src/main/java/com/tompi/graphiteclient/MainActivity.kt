@@ -6,10 +6,15 @@ import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.LruCache
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.*
 import com.google.gson.Gson
@@ -46,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         val text = findViewById<TextView>(R.id.outText)
         val button = findViewById<Button>(R.id.refreshButton)
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        val recyclerView = findViewById<RecyclerView>(R.id.list_recycler)
 
         progressBar.visibility = View.VISIBLE
         button.visibility = View.GONE
@@ -55,6 +61,19 @@ class MainActivity : AppCompatActivity() {
             text.setText(it.toString())
             progressBar.visibility = View.GONE
             button.visibility = View.VISIBLE
+
+
+            recyclerView.apply {
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(this@MainActivity)
+
+                adapter = GraphiteDataAdapter(it) {
+                    //TODO: onclick
+                }
+
+            }
+
+
         }, fail = {
             logger.error("FAIL: $it")
             progressBar.visibility = View.GONE
@@ -69,8 +88,49 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+}
 
+class GraphiteDataAdapter(private val dataset: GraphiteData, val itemSelected: (GraphiteStringTarget) -> Unit) : RecyclerView.Adapter<GraphiteDataViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GraphiteDataViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return GraphiteDataViewHolder(inflater, parent, itemSelected)
+    }
 
+    override fun getItemCount(): Int {
+        return dataset.targetList.size
+    }
+
+    override fun onBindViewHolder(holder: GraphiteDataViewHolder, position: Int) {
+        holder.bind(dataset.targetList[position])
+    }
+
+}
+
+class GraphiteDataViewHolder(inflater: LayoutInflater, parent: ViewGroup, val itemSelected: (GraphiteStringTarget) -> Unit) : RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item_data, parent, false)), View.OnClickListener {
+    private var a: TextView? = null
+    private var b: TextView? = null
+    var data: GraphiteStringTarget? = null
+
+    init {
+        a = itemView.findViewById(R.id.textName)
+        b = itemView.findViewById(R.id.textValue)
+    }
+
+    fun bind(holderData: GraphiteStringTarget) {
+        data = holderData
+        itemView.setOnClickListener(this)
+
+        a?.text = data?.name
+        b?.text = data?.value
+
+        itemView.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View) {
+        data?.let {
+            itemSelected(it)
+        }
+    }
 }
 
 class GraphileLoader(val server:String , val target: String, val succes: (GraphiteData) -> Unit, val fail: (String) -> Unit) {
