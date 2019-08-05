@@ -30,8 +30,10 @@ class MainActivity : AppCompatActivity() {
 
     //        val url = "https://play.grafana.org/api/datasources/proxy/1/render?target=summarize(apps.fakesite.web_server_01.counters.requests.count,%271hour%27,%27last%27)&from=-1h&format=json"
 //        val url = "https://play.grafana.org/api/datasources/proxy/1/render?target=summarize(apps.fakesite.*.counters.requests.count,%271hour%27,%27last%27)&from=-1h&format=json"
-    val server = "https://play.grafana.org/api/datasources/proxy/1/"
-    val target = "apps.fakesite.*.counters.requests.count"
+//    val server = "https://play.grafana.org/api/datasources/proxy/1/"
+    val server = "http://192.168.1.164:8013/"
+//    val target = "apps.fakesite.*.counters.requests.count"
+    val target = "tompi.home.*.temperature"
 
     companion object {
         private val logger = LoggerFactory.getLogger("GraphiteClient")!!
@@ -74,15 +76,19 @@ class MainActivity : AppCompatActivity() {
 class GraphileLoader(val server:String , val target: String, val succes: (GraphiteData) -> Unit, val fail: (String) -> Unit) {
     val url = String.format("${server}render?target=summarize(${target},'1hour','last')&from=-1h&format=json")
     val request: JsonArrayRequest
-
+    companion object {
+        private val logger = LoggerFactory.getLogger("GraphiteClient")!!
+    }
     init {
-
+        logger.debug(url)
         request = JsonArrayRequest(Request.Method.GET,url,null,
             Response.Listener { response ->
                 val data = GraphiteData.CreateFromJson(response, target.split(".").indexOf("*"))
+                    logger.debug(response.toString())
                 if(data == null) {
                     fail("Parse error")
                 } else {
+
                     succes(data)
                 }
             }, Response.ErrorListener{
@@ -110,7 +116,6 @@ data class GraphiteData(val targetList: Array<GraphiteStringTarget>) {
                 for (i in 0..(array.length() - 1)) {
                     val item = array.getJSONObject(i)
                     targetListArray.add(parseTarget(item, targetIdx))
-
                 }
             }catch (e:Exception){
                 logger.debug("Exception: $e")
