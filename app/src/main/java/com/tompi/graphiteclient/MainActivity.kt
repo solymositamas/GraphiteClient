@@ -36,7 +36,8 @@ class MainActivity : AppCompatActivity() {
     //        val url = "https://play.grafana.org/api/datasources/proxy/1/render?target=summarize(apps.fakesite.web_server_01.counters.requests.count,%271hour%27,%27last%27)&from=-1h&format=json"
 //        val url = "https://play.grafana.org/api/datasources/proxy/1/render?target=summarize(apps.fakesite.*.counters.requests.count,%271hour%27,%27last%27)&from=-1h&format=json"
 //    val server = "https://play.grafana.org/api/datasources/proxy/1/"
-    val server = "http://192.168.1.164:8013/"
+//    val server = "http://192.168.1.164:8013/"
+    val server = "http://tompi.synology.me:8013/"
 //    val target = "apps.fakesite.*.counters.requests.count"
     val target = "tompi.home.*.temperature"
 
