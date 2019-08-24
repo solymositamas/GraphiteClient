@@ -23,10 +23,7 @@ import org.slf4j.LoggerFactory
 import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
 import com.google.gson.JsonArray
-import com.tompi.graphiteclient.data.GraphiteDataItem
-import com.tompi.graphiteclient.data.GraphiteDataSet
-import com.tompi.graphiteclient.data.GraphiteSettingItem
-import com.tompi.graphiteclient.data.GraphiteSettings
+import com.tompi.graphiteclient.data.*
 import org.json.JSONArray
 import org.json.JSONObject
 import org.w3c.dom.Text
@@ -134,32 +131,3 @@ class GraphiteDataViewHolder(inflater: LayoutInflater, parent: ViewGroup, val it
     }
 }
 
-class GraphiteLoader(setting: GraphiteSettingItem, val succes: (GraphiteDataSet) -> Unit, val fail: (String) -> Unit) {
-    val url = setting.getUrl()
-    val request: JsonArrayRequest
-    companion object {
-        private val logger = LoggerFactory.getLogger("GraphiteClient")!!
-    }
-    init {
-        logger.debug(url)
-        request = JsonArrayRequest(Request.Method.GET,url,null,
-            Response.Listener { response ->
-                val data = GraphiteDataSet.CreateFromJson(response, setting.targetIdx)
-                    logger.debug(response.toString())
-                if(data == null) {
-                    fail("Parse error")
-                } else {
-
-                    succes(data)
-                }
-            }, Response.ErrorListener{
-                fail(it.toString())
-            })
-
-        request.retryPolicy = DefaultRetryPolicy( DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,0, 1f )
-    }
-
-    fun load(context: Context) {
-        VolleySingleton.getInstance(context).addToRequestQueue(request)
-    }
-}

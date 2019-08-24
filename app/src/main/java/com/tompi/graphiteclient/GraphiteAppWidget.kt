@@ -11,6 +11,7 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID
 import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_IDS
 import android.widget.Toast
+import com.tompi.graphiteclient.data.GraphiteLoader
 import com.tompi.graphiteclient.data.GraphiteSettingItem
 import com.tompi.graphiteclient.data.GraphiteSettings
 

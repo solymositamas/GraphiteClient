@@ -14,6 +14,12 @@ object GraphiteSettings {
         return ret
     }
 
+    fun replaceItem(key: String, value: GraphiteSettingItem) {
+        targetMap.remove(key)
+        targetMap.put(key, value)
+        saveToPreferences(targetMap)
+    }
+
     private fun saveToPreferences(targetMap: MutableMap<String, GraphiteSettingItem>) {
 
     }
