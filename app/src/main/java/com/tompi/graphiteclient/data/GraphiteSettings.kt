@@ -37,6 +37,10 @@ object GraphiteSettings {
 //    val target = "apps.fakesite.*.counters.requests.count"
         val target = "tompi.home.*.temperature"
         mock.put("1234", GraphiteSettingItem(false, server, port, target))
+        mock.put("12345", GraphiteSettingItem(false, server, port, target))
+        mock.put("12346", GraphiteSettingItem(false, server, port, target))
+        mock.put("12347", GraphiteSettingItem(false, server, port, target))
+        mock.put("12348", GraphiteSettingItem(false, server, port, target))
         return mock
     }
 }
