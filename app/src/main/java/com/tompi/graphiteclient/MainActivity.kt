@@ -23,23 +23,20 @@ import org.slf4j.LoggerFactory
 import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
 import com.google.gson.JsonArray
+import com.tompi.graphiteclient.data.GraphiteDataItem
+import com.tompi.graphiteclient.data.GraphiteDataSet
+import com.tompi.graphiteclient.data.GraphiteSettingItem
+import com.tompi.graphiteclient.data.GraphiteSettings
 import org.json.JSONArray
 import org.json.JSONObject
 import org.w3c.dom.Text
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-
-    //        val url = "https://play.grafana.org/api/datasources/proxy/1/render?target=summarize(apps.fakesite.web_server_01.counters.requests.count,%271hour%27,%27last%27)&from=-1h&format=json"
-//        val url = "https://play.grafana.org/api/datasources/proxy/1/render?target=summarize(apps.fakesite.*.counters.requests.count,%271hour%27,%27last%27)&from=-1h&format=json"
-//    val server = "https://play.grafana.org/api/datasources/proxy/1/"
-//    val server = "http://192.168.1.164:8013/"
-    val server = "http://tompi.synology.me:8013/"
-//    val target = "apps.fakesite.*.counters.requests.count"
-    val target = "tompi.home.*.temperature"
 
     companion object {
         private val logger = LoggerFactory.getLogger("GraphiteClient")!!
@@ -57,7 +54,10 @@ class MainActivity : AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
         button.visibility = View.GONE
 
-        val loader: GraphileLoader = GraphileLoader(server, target, succes = {
+//        val settings = GraphiteSettingItem(false, server, port, target)
+        val settings = GraphiteSettings.getMap().entries.first().value
+        logger.debug(settings.getUrl())
+        val loader: GraphiteLoader = GraphiteLoader(settings, succes = {
             logger.debug("data: $it")
             text.setText(it.toString())
             progressBar.visibility = View.GONE
@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
 }
 
-class GraphiteDataAdapter(private val dataset: GraphiteData, val itemSelected: (GraphiteStringTarget) -> Unit) : RecyclerView.Adapter<GraphiteDataViewHolder>() {
+class GraphiteDataAdapter(private val dataset: GraphiteDataSet, val itemSelected: (GraphiteDataItem) -> Unit) : RecyclerView.Adapter<GraphiteDataViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GraphiteDataViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return GraphiteDataViewHolder(inflater, parent, itemSelected)
@@ -107,22 +107,22 @@ class GraphiteDataAdapter(private val dataset: GraphiteData, val itemSelected: (
 
 }
 
-class GraphiteDataViewHolder(inflater: LayoutInflater, parent: ViewGroup, val itemSelected: (GraphiteStringTarget) -> Unit) : RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item_data, parent, false)), View.OnClickListener {
+class GraphiteDataViewHolder(inflater: LayoutInflater, parent: ViewGroup, val itemSelected: (GraphiteDataItem) -> Unit) : RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item_data, parent, false)), View.OnClickListener {
     private var a: TextView? = null
     private var b: TextView? = null
-    var data: GraphiteStringTarget? = null
+    var data: GraphiteDataItem? = null
 
     init {
         a = itemView.findViewById(R.id.textName)
         b = itemView.findViewById(R.id.textValue)
     }
 
-    fun bind(holderData: GraphiteStringTarget) {
+    fun bind(holderData: GraphiteDataItem) {
         data = holderData
         itemView.setOnClickListener(this)
 
         a?.text = data?.name
-        b?.text = data?.value
+        b?.text = data?.valueString
 
         itemView.setOnClickListener(this)
     }
@@ -134,8 +134,8 @@ class GraphiteDataViewHolder(inflater: LayoutInflater, parent: ViewGroup, val it
     }
 }
 
-class GraphileLoader(val server:String , val target: String, val succes: (GraphiteData) -> Unit, val fail: (String) -> Unit) {
-    val url = String.format("${server}render?target=summarize(${target},'1hour','last')&from=-1h&format=json")
+class GraphiteLoader(setting: GraphiteSettingItem, val succes: (GraphiteDataSet) -> Unit, val fail: (String) -> Unit) {
+    val url = setting.getUrl()
     val request: JsonArrayRequest
     companion object {
         private val logger = LoggerFactory.getLogger("GraphiteClient")!!
@@ -144,7 +144,7 @@ class GraphileLoader(val server:String , val target: String, val succes: (Graphi
         logger.debug(url)
         request = JsonArrayRequest(Request.Method.GET,url,null,
             Response.Listener { response ->
-                val data = GraphiteData.CreateFromJson(response, target.split(".").indexOf("*"))
+                val data = GraphiteDataSet.CreateFromJson(response, setting.targetIdx)
                     logger.debug(response.toString())
                 if(data == null) {
                     fail("Parse error")
@@ -161,60 +161,5 @@ class GraphileLoader(val server:String , val target: String, val succes: (Graphi
 
     fun load(context: Context) {
         VolleySingleton.getInstance(context).addToRequestQueue(request)
-    }
-}
-
-data class GraphiteData(val targetList: Array<GraphiteStringTarget>) {
-    private val created: Long = System.currentTimeMillis()
-    private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd : hh-mm-ss")
-
-    companion object {
-        private val logger = LoggerFactory.getLogger("GraphiteClient")!!
-
-        fun CreateFromJson(array: JSONArray, targetIdx: Int = -1): GraphiteData? {
-            var targetListArray = mutableListOf<GraphiteStringTarget>()
-            try {
-                for (i in 0..(array.length() - 1)) {
-                    val item = array.getJSONObject(i)
-                    targetListArray.add(parseTarget(item, targetIdx))
-                }
-            }catch (e:Exception){
-                logger.debug("Exception: $e")
-                return null
-            }
-            return GraphiteData(targetListArray.toTypedArray())
-        }
-
-
-        fun parseTarget(array: JSONObject, targetIdx: Int): GraphiteStringTarget{
-            val data = array.getJSONArray("datapoints").getJSONArray(0)[0].toString()
-            val targetName =
-                if(targetIdx >= 0) {
-                    getTargetName(targetIdx, array.optString("target"))
-                } else {
-                    array.optString("target")
-                }
-            return GraphiteStringTarget(targetName, data)
-        }
-
-        fun getTargetName(targetIdx: Int, result: String): String = result.split(".").get(targetIdx)
-
-    }
-
-    fun getFormattedDate(): String = simpleDateFormat.format(created)
-
-    override fun toString(): String {
-
-        var arraysString = ""
-        targetList.forEach {
-            arraysString += it.toString() + "\n"
-        }
-        return "${getFormattedDate()} \n$arraysString"
-    }
-}
-
-data class GraphiteStringTarget(val name: String, val value: String) {
-    override fun toString(): String {
-        return "$name: $value"
     }
 }

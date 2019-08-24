@@ -11,6 +11,8 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID
 import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_IDS
 import android.widget.Toast
+import com.tompi.graphiteclient.data.GraphiteSettingItem
+import com.tompi.graphiteclient.data.GraphiteSettings
 
 const val REFRESH_ACTION = "com.tompi.graphiteclient.REFRESH_ACTION"
 
@@ -88,12 +90,12 @@ class GraphiteAppWidget : AppWidgetProvider() {
         val widgetText = GraphiteAppWidgetConfigureActivity.loadTitlePref(context, appWidgetId)
         // Construct the RemoteViews object
         val views = RemoteViews(context.packageName, R.layout.graphite_app_widget)
-//            views.setTextViewText(R.id.appwidget_text, widgetText)
-//            val server = "http://192.168.1.164:8013/"
-        val server = "http://tompi.synology.me:8013/"
-        val target = "tompi.home.*.temperature"
+
         views.setTextViewText(R.id.appwidget_text, "ooOoOooo")
-        val loader: GraphileLoader = GraphileLoader(server, target, succes = {
+
+
+        val settings = GraphiteSettings.getMap().entries.first().value
+        val loader: GraphiteLoader = GraphiteLoader(settings, succes = {
             logger.debug("update success")
 //                    views.setTextViewText(R.id.appwidget_text, "ooOoOooo!!!")
             views.setTextViewText(R.id.appwidget_text, it.toString())
