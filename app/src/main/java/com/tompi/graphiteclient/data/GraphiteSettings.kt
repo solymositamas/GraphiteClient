@@ -20,6 +20,10 @@ object GraphiteSettings {
         saveToPreferences(targetMap)
     }
 
+    fun getSettingsByID(settingId: String): GraphiteSettingItem? {
+        return targetMap.get(settingId)
+    }
+
     private fun saveToPreferences(targetMap: MutableMap<String, GraphiteSettingItem>) {
 
     }
@@ -32,15 +36,13 @@ object GraphiteSettings {
 //        val url = "https://play.grafana.org/api/datasources/proxy/1/render?target=summarize(apps.fakesite.*.counters.requests.count,%271hour%27,%27last%27)&from=-1h&format=json"
 //    val server = "https://play.grafana.org/api/datasources/proxy/1/"
 //    val server = "http://192.168.1.164:8013/"
+        val server2 = "192.168.1.164"
         val server = "tompi.synology.me"
         val port = "8013"
 //    val target = "apps.fakesite.*.counters.requests.count"
         val target = "tompi.home.*.temperature"
         mock.put("1234", GraphiteSettingItem(false, server, port, target))
-        mock.put("12345", GraphiteSettingItem(false, server, port, target))
-        mock.put("12346", GraphiteSettingItem(false, server, port, target))
-        mock.put("12347", GraphiteSettingItem(false, server, port, target))
-        mock.put("12348", GraphiteSettingItem(false, server, port, target))
+        mock.put("12345", GraphiteSettingItem(false, server2, port, target))
         return mock
     }
 }

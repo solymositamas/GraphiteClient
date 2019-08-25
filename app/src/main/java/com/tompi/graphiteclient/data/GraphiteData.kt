@@ -88,10 +88,10 @@ class GraphiteLoader(setting: GraphiteSettingItem, val succes: (GraphiteDataSet)
                 if(data == null) {
                     fail("Parse error")
                 } else {
-
                     succes(data)
                 }
             }, Response.ErrorListener{
+                logger.error(it.toString())
                 fail(it.toString())
             })
 
@@ -99,6 +99,10 @@ class GraphiteLoader(setting: GraphiteSettingItem, val succes: (GraphiteDataSet)
     }
 
     fun load(context: Context) {
-        VolleySingleton.getInstance(context).addToRequestQueue(request)
+        try {
+            VolleySingleton.getInstance(context).addToRequestQueue(request)
+        } catch (e: Exception ){
+            logger.error(e.toString())
+        }
     }
 }
