@@ -23,7 +23,7 @@
 
     <fragment
             android:id="@+id/selector_fragment"
-            android:name="com.tompi.graphiteclient.SettingSelectorFragment"
+            android:name="com.tompi.graphiteclient.SettingEditorFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"

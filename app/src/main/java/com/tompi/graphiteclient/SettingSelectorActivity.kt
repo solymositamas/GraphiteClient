@@ -14,7 +14,7 @@ import android.content.Context
 
 class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnListFragmentInteractionListener {
 
-    internal var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+    private var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private var isConfiguring = false
 
     companion object {
@@ -57,8 +57,12 @@ class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnL
         }
     }
 
+    val EDIT_SETTING_REQUEST = 1
     override fun onListItemEditClicked(id: String, item: GraphiteSettingItem?) {
         logger.debug("onListItemEditClicked() called with: id = [$id], item = [$item]")
+
+        val i = SettingEditorActivity.createIntent(this, id)
+        startActivityForResult(i, EDIT_SETTING_REQUEST)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

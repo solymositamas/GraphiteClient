@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.graphite_app_widget.view.*
 
 class SettingEditorFragment : Fragment() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -29,7 +28,7 @@ class SettingEditorFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_settingselector_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_setting_editor, container, false)
 
         return view
     }

@@ -90,7 +90,7 @@ class SettingSelectorFragment : Fragment() {
 
 class MySettingselectorRecyclerViewAdapter(
     private val mValueMap:  Map<String, GraphiteSettingItem>,
-    private val mListener: SettingSelectorFragment.OnListFragmentInteractionListener?
+    private val listClickListener: SettingSelectorFragment.OnListFragmentInteractionListener?
 ) : RecyclerView.Adapter<MySettingselectorRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
@@ -101,7 +101,7 @@ class MySettingselectorRecyclerViewAdapter(
             val item = v.tag as Map.Entry<String, GraphiteSettingItem>
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mListener?.onListItemClicked(item.key, item.value)
+            listClickListener?.onListItemClicked(item.key, item.value)
         }
     }
 
@@ -118,7 +118,7 @@ class MySettingselectorRecyclerViewAdapter(
 
         holder.description.text = elementAt.value.serversList.keys.joinToString(separator = "\n")
         holder.settingsButton.setOnClickListener {
-            mListener?.onListItemEditClicked(elementAt.key, elementAt.value)
+            listClickListener?.onListItemEditClicked(elementAt.key, elementAt.value)
         }
         with(holder.view) {
             tag = elementAt
