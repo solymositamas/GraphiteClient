@@ -96,6 +96,7 @@ class GraphiteAppWidget : AppWidgetProvider() {
         val loader: GraphiteLoader = GraphiteLoader(settings, succes = {
             logger.debug("update success :$appWidgetId")
             views.setTextViewText(R.id.appwidget_text, it.toString())
+            views.setTextViewText(R.id.appwidget_text_timestamp, it.getFormattedDate())
 
             logger.debug("updateAppwidget: $appWidgetId")
             appWidgetManager.updateAppWidget(appWidgetId, views)

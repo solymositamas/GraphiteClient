@@ -26,5 +26,14 @@
             android:layout_marginBottom="8dp"
             android:padding="8dip"
             android:layout_alignParentTop="true"/>
-
+    <TextView
+            android:id="@+id/appwidget_text_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1970.01.01 12.12.12"
+            android:textColor="#ffffff"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"/>
 </RelativeLayout>

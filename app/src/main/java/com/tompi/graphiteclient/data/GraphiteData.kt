@@ -54,12 +54,7 @@ data class GraphiteDataSet(val targetList: Array<GraphiteDataItem>) {
     fun getFormattedDate(): String = simpleDateFormat.format(created)
 
     override fun toString(): String {
-
-        var arraysString = ""
-        targetList.forEach {
-            arraysString += it.toString() + "\n"
-        }
-        return "${getFormattedDate()} \n$arraysString"
+        return targetList.joinToString(separator = "\n")
     }
 }
 
