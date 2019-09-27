@@ -15,6 +15,7 @@ import android.content.Context
 class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnListFragmentInteractionListener {
 
     internal var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+    private var isConfiguring = false
 
     companion object {
         private val logger = LoggerFactory.getLogger("SettingSelectorActivity")!!
@@ -42,19 +43,23 @@ class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnL
     }
 
 
-    override fun onListFragmentInteraction(id: String, item: GraphiteSettingItem?) {
-        logger.debug("id: $id, item: $item")
+    override fun onListItemClicked(id: String, item: GraphiteSettingItem?) {
+        logger.debug("onListItemClicked() called with: id = [$id], item = [$item]")
 
-        val resultValue = Intent()
-        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
-        resultValue.putExtra("GRAPHITE_SETTING_ID", id)
-        saveSelectedSetting(this, mAppWidgetId, id)
+        if(isConfiguring) {
+            val resultValue = Intent()
+            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
+            resultValue.putExtra("GRAPHITE_SETTING_ID", id)
+            saveSelectedSetting(this, mAppWidgetId, id)
 
-        setResult(Activity.RESULT_OK, resultValue)
-        finish()
-
+            setResult(Activity.RESULT_OK, resultValue)
+            finish()
+        }
     }
 
+    override fun onListItemEditClicked(id: String, item: GraphiteSettingItem?) {
+        logger.debug("onListItemEditClicked() called with: id = [$id], item = [$item]")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,15 +74,17 @@ class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnL
                 AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID
             )
         } else {
-            logger.error("extras == null")
+            logger.debug("extras == null")
         }
 
-        // If this activity was started with an intent without an app widget ID, finish with an error.
-        if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            logger.error("INVALID_APPWIDGET_ID")
-            finish()
-            return
-        }
+        isConfiguring = mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID
+//
+//        // If this activity was started with an intent without an app widget ID, finish with an error.
+//        if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+//            logger.error("INVALID_APPWIDGET_ID")
+//            finish()
+//            return
+//        }
     }
 
 

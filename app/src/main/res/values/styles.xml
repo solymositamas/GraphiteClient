@@ -14,4 +14,13 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+
+    <style name="image_button_borderless" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_margin">0dp</item>
+    </style>
+
+
 </resources>

@@ -9,11 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import com.tompi.graphiteclient.data.GraphiteSettingItem
 import com.tompi.graphiteclient.data.GraphiteSettings
 
 import kotlinx.android.synthetic.main.fragment_settingselector_listitem.view.*
+import kotlinx.android.synthetic.main.graphite_app_widget.view.*
 
 class SettingSelectorFragment : Fragment() {
 
@@ -65,7 +67,8 @@ class SettingSelectorFragment : Fragment() {
 
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onListFragmentInteraction(id: String, item: GraphiteSettingItem?)
+        fun onListItemClicked(id: String, item: GraphiteSettingItem?)
+        fun onListItemEditClicked(id: String, item: GraphiteSettingItem?)
     }
 
     companion object {
@@ -98,7 +101,7 @@ class MySettingselectorRecyclerViewAdapter(
             val item = v.tag as Map.Entry<String, GraphiteSettingItem>
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(item.key, item.value)
+            mListener?.onListItemClicked(item.key, item.value)
         }
     }
 
@@ -110,12 +113,14 @@ class MySettingselectorRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val elementAt = mValueMap.entries.elementAt(position)
-//        holder.mIdView.text = elementAt.value.urlList.first()
-        holder.mIdView.text = elementAt.key
+//        holder.idView.text = elementAt.value.urlList.first()
+        holder.id.text = elementAt.key
 
-        holder.mContentView.text = elementAt.value.serversList.keys.joinToString(separator = "\n")
-
-        with(holder.mView) {
+        holder.description.text = elementAt.value.serversList.keys.joinToString(separator = "\n")
+        holder.settingsButton.setOnClickListener {
+            mListener?.onListItemEditClicked(elementAt.key, elementAt.value)
+        }
+        with(holder.view) {
             tag = elementAt
             setOnClickListener(mOnClickListener)
         }
@@ -123,12 +128,13 @@ class MySettingselectorRecyclerViewAdapter(
 
     override fun getItemCount(): Int = mValueMap.size
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mIdView: TextView = mView.item_number
-        val mContentView: TextView = mView.content
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val id: TextView = view.item_number
+        val description: TextView = view.content
+        val settingsButton: ImageButton = view.list_item_edit
 
         override fun toString(): String {
-            return super.toString() + " '" + mContentView.text + "'"
+            return super.toString() + " '" + description.text + "'"
         }
     }
 }

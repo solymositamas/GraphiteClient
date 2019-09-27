@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory
 import android.content.Context
 
 class GraphiteClientActivity : AppCompatActivity(), SettingSelectorFragment.OnListFragmentInteractionListener {
+    override fun onListItemEditClicked(id: String, item: GraphiteSettingItem?) {
+        logger.debug("id: $id, item: $item")
+    }
 
     companion object {
         private val logger = LoggerFactory.getLogger("GraphiteClientActivity")!!
@@ -20,7 +23,7 @@ class GraphiteClientActivity : AppCompatActivity(), SettingSelectorFragment.OnLi
     }
 
 
-    override fun onListFragmentInteraction(id: String, item: GraphiteSettingItem?) {
+    override fun onListItemClicked(id: String, item: GraphiteSettingItem?) {
         logger.debug("id: $id, item: $item")
     }
 
