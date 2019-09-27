@@ -110,7 +110,7 @@ class MySettingselectorRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val elementAt = mValueMap.entries.elementAt(position)
-        holder.mIdView.text = elementAt.value.serverUrl.url
+        holder.mIdView.text = elementAt.value.urlList.first()
         holder.mContentView.text = elementAt.value.target
 
         with(holder.mView) {

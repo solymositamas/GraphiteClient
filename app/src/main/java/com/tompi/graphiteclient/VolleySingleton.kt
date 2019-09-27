@@ -22,7 +22,12 @@ class VolleySingleton constructor(context: Context) {
         // Activity or BroadcastReceiver if someone passes one in.
         Volley.newRequestQueue(context.applicationContext)
     }
+
     fun <T> addToRequestQueue(req: Request<T>) {
         requestQueue.add(req)
+    }
+
+    fun cancelAll(tag: String) {
+        requestQueue.cancelAll(tag)
     }
 }

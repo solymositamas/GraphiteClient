@@ -41,16 +41,24 @@ object GraphiteSettings {
         val port = "8013"
 //    val target = "apps.fakesite.*.counters.requests.count"
         val target = "tompi.home.*.temperature"
-        mock.put("1234", GraphiteSettingItem(GraphiteServerUrl(false, server, port), target))
-        mock.put("12345", GraphiteSettingItem(GraphiteServerUrl(false, server2, port), target))
+        mock.put("1234", GraphiteSettingItem(
+            listOf(GraphiteServerUrl(false, server, port))
+            , target))
+
+        mock.put("12345", GraphiteSettingItem(
+            listOf(GraphiteServerUrl(false, server2, port), GraphiteServerUrl(false, server, port))
+            , target))
         return mock
     }
 }
 
-data class GraphiteSettingItem(val serverUrl: GraphiteServerUrl, val target: String) {
+data class GraphiteSettingItem(private val serverList: List<GraphiteServerUrl>, val target: String) {
     val targetIdx = target.split(".").indexOf("*")
-    fun getUrl(): String {
-        return String.format("${serverUrl.url}/render?target=summarize(${target},'1hour','last')&from=-1h&format=json")
+    val urlList: List<String>
+        get() {
+        return serverList.map() {
+            String.format("${it.url}/render?target=summarize(${target},'1hour','last')&from=-1h&format=json")
+        }
     }
 }
 

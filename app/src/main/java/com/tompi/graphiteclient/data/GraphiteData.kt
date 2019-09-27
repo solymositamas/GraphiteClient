@@ -74,33 +74,47 @@ data class GraphiteDataItem(val name: String, val value: Double) {
 }
 
 class GraphiteLoader(setting: GraphiteSettingItem, val succes: (GraphiteDataSet) -> Unit, val fail: (String) -> Unit) {
-    val url = setting.getUrl()
-    val request: JsonArrayRequest
+    private val GRAPHITE_REQUEST_TAG = "GRAPHITE_REQUEST_TAG"
+
+    lateinit var context: Context
+
+    val requestList: MutableList<JsonArrayRequest> = mutableListOf()
     companion object {
         private val logger = LoggerFactory.getLogger("GraphiteClient")!!
     }
-    init {
-        logger.debug(url)
-        request = JsonArrayRequest(Request.Method.GET,url,null,
-            Response.Listener { response ->
-                val data = GraphiteDataSet.CreateFromJson(response, setting.targetIdx)
-                logger.debug(response.toString())
-                if(data == null) {
-                    fail("Parse error")
-                } else {
-                    succes(data)
-                }
-            }, Response.ErrorListener{
-                logger.error(it.toString())
-                fail(it.toString())
-            })
 
-        request.retryPolicy = DefaultRetryPolicy( DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,0, 1f )
+
+    init {
+        setting.urlList.forEach {
+            logger.debug(it)
+            val request = JsonArrayRequest(Request.Method.GET,it,null,
+                Response.Listener { response ->
+                    val data = GraphiteDataSet.CreateFromJson(response, setting.targetIdx)
+                    logger.debug(response.toString())
+                    if(data == null) {
+                        fail("Parse error")
+                    } else {
+                        VolleySingleton.getInstance(context).cancelAll(GRAPHITE_REQUEST_TAG)
+                        succes(data)
+                    }
+                }, Response.ErrorListener{
+                    logger.error(it.toString())
+                    fail(it.toString())
+                })
+            request.tag = GRAPHITE_REQUEST_TAG
+            request.retryPolicy = DefaultRetryPolicy( DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,0, 1f )
+
+            requestList.add(request)
+        }
     }
 
     fun load(context: Context) {
+        this.context = context
         try {
-            VolleySingleton.getInstance(context).addToRequestQueue(request)
+            requestList.forEach {
+                logger.debug("loading: ${it.toString()}")
+                VolleySingleton.getInstance(context).addToRequestQueue(it)
+            }
         } catch (e: Exception ){
             logger.error(e.toString())
         }
