@@ -15,11 +15,6 @@ import com.tompi.graphiteclient.data.GraphiteSettings
 
 import kotlinx.android.synthetic.main.fragment_settingselector.view.*
 
-/**
- * A fragment representing a list of Items.
- * Activities containing this fragment MUST implement the
- * [SettingSelectorFragment.OnListFragmentInteractionListener] interface.
- */
 class SettingSelectorFragment : Fragment() {
 
     // TODO: Customize parameters
@@ -68,17 +63,6 @@ class SettingSelectorFragment : Fragment() {
         listener = null
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson
-     * [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         fun onListFragmentInteraction(id: String, item: GraphiteSettingItem?)
@@ -99,6 +83,8 @@ class SettingSelectorFragment : Fragment() {
             }
     }
 }
+
+
 class MySettingselectorRecyclerViewAdapter(
     private val mValueMap:  Map<String, GraphiteSettingItem>,
     private val mListener: SettingSelectorFragment.OnListFragmentInteractionListener?
@@ -124,7 +110,7 @@ class MySettingselectorRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val elementAt = mValueMap.entries.elementAt(position)
-        holder.mIdView.text = elementAt.value.server
+        holder.mIdView.text = elementAt.value.serverUrl.url
         holder.mContentView.text = elementAt.value.target
 
         with(holder.mView) {

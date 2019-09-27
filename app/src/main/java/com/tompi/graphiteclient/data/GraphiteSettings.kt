@@ -41,20 +41,24 @@ object GraphiteSettings {
         val port = "8013"
 //    val target = "apps.fakesite.*.counters.requests.count"
         val target = "tompi.home.*.temperature"
-        mock.put("1234", GraphiteSettingItem(false, server, port, target))
-        mock.put("12345", GraphiteSettingItem(false, server2, port, target))
+        mock.put("1234", GraphiteSettingItem(GraphiteServerUrl(false, server, port), target))
+        mock.put("12345", GraphiteSettingItem(GraphiteServerUrl(false, server2, port), target))
         return mock
     }
 }
 
-data class GraphiteSettingItem(val isSecure: Boolean, val server: String, val port: String?, val target: String) {
-    val scheme = if(isSecure) "https" else "http"
-    val portStr: String = if(port == null) "" else ":$port"
+data class GraphiteSettingItem(val serverUrl: GraphiteServerUrl, val target: String) {
     val targetIdx = target.split(".").indexOf("*")
-
     fun getUrl(): String {
+        return String.format("${serverUrl.url}/render?target=summarize(${target},'1hour','last')&from=-1h&format=json")
+    }
+}
 
-        return String.format("${scheme}://${server}${portStr}/render?target=summarize(${target},'1hour','last')&from=-1h&format=json")
-
+data class GraphiteServerUrl(val isSecure: Boolean, val server: String, val port: String?) {
+    val url:String
+    get() {
+        val scheme = if(isSecure) "https" else "http"
+        val portStr: String = if(port == null) "" else ":$port"
+        return String.format("${scheme}://${server}${portStr}")
     }
 }
