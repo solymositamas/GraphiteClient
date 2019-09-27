@@ -61,7 +61,7 @@ class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnL
     override fun onListItemEditClicked(id: String, item: GraphiteSettingItem?) {
         logger.debug("onListItemEditClicked() called with: id = [$id], item = [$item]")
 
-        val i = SettingEditorActivity.createIntent(this, id)
+        val i = SettingEditorFragment.createIntent(this, id)
         startActivityForResult(i, EDIT_SETTING_REQUEST)
     }
 

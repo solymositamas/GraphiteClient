@@ -19,14 +19,21 @@ import com.tompi.graphiteclient.data.GraphiteSettings
 
 import kotlinx.android.synthetic.main.fragment_settingselector_listitem.view.*
 import kotlinx.android.synthetic.main.graphite_app_widget.view.*
+import org.slf4j.LoggerFactory
 
 class SettingEditorFragment : Fragment() {
     private lateinit var toolbar: Toolbar
-//    private lateinit var settingsId: String
+    private lateinit var settingsId: String
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
+    companion object {
+        private val logger = LoggerFactory.getLogger("SettingEditorActivity")!!
+        val SETTING_ID = "SETTING_ID"
+        fun createIntent(context: Context, id: String): Intent {
+            val i = Intent(context, SettingEditorFragment::class.java)
+            i.putExtra(SETTING_ID,id)
+            return i
+        }
     }
 
     override fun onCreateView(
@@ -34,6 +41,10 @@ class SettingEditorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_setting_editor, container, false)
+
+        settingsId = requireActivity().intent.getStringExtra(SETTING_ID) ?: "noope"
+        val graphiteSettings = GraphiteSettings.getSettingsByID(settingsId)
+        logger.debug("id: $settingsId - settings: ${graphiteSettings.toString()}")
 
 
         toolbar = view.findViewById(R.id.toolbar)
