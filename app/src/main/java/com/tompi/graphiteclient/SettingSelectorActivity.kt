@@ -53,7 +53,6 @@ class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnL
         setResult(Activity.RESULT_OK, resultValue)
         finish()
 
-
     }
 
 
@@ -78,30 +77,5 @@ class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnL
         }
     }
 
-
-
-
-/*
-    private val PREFS_NAME = "com.example.android.apis.appwidget.ExampleAppWidgetProvider"
-    private val PREF_PREFIX_KEY = "prefix_"
-    // Write the prefix to the SharedPreferences object for this widget
-    fun saveTitlePref(context: Context, appWidgetId: Int, text: String) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-        prefs.putString(PREF_PREFIX_KEY + appWidgetId, text)
-        prefs.commit()
-    }
-
-    // Read the prefix from the SharedPreferences object for this widget.
-    // If there is no preference saved, get the default from a resource
-    fun loadTitlePref(context: Context, appWidgetId: Int): String {
-        val prefs = context.getSharedPreferences(PREFS_NAME, 0)
-        val prefix = prefs.getString(PREF_PREFIX_KEY + appWidgetId, null)
-        return if (prefix != null) {
-            prefix
-        } else {
-            context.getString(R.string.appwidget_prefix_default)
-        }
-    }
-*/
 
 }

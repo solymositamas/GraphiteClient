@@ -20,16 +20,7 @@ const val REFRESH_ACTION = "com.tompi.graphiteclient.REFRESH_ACTION"
 class GraphiteAppWidget : AppWidgetProvider() {
 
     companion object {
-
         private val logger = LoggerFactory.getLogger("GraphiteClient")!!
-
-//        private val MyOnClick = "myOnClickTag"
-//        protected fun getPendingSelfIntent(context: Context, action: String): PendingIntent {
-//            val intent = Intent(context, javaClass)
-//            intent.action = action
-//            return PendingIntent.getBroadcast(context, 0, intent, 0)
-//        }
-
 
     }
 
@@ -94,22 +85,17 @@ class GraphiteAppWidget : AppWidgetProvider() {
         settingID: String
     ) {
         logger.debug("updateAppWidget id: $appWidgetId, settingID: $settingID")
-        // Construct the RemoteViews object
         val views = RemoteViews(context.packageName, R.layout.graphite_app_widget)
 
         views.setTextViewText(R.id.appwidget_text, "ooOoOooo $appWidgetId")
 
 
-//        val settings = GraphiteSettings.getMap().entries.first().value
         val settings = GraphiteSettings.getSettingsByID(settingID)
         if (settings == null) return
 
         val loader: GraphiteLoader = GraphiteLoader(settings, succes = {
             logger.debug("update success :$appWidgetId")
-//                    views.setTextViewText(R.id.appwidget_text, "ooOoOooo!!!")
             views.setTextViewText(R.id.appwidget_text, it.toString())
-
-            // Instruct the widget manager to update the widget
 
             logger.debug("updateAppwidget: $appWidgetId")
             appWidgetManager.updateAppWidget(appWidgetId, views)
