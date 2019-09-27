@@ -85,9 +85,9 @@ class GraphiteLoader(setting: GraphiteSettingItem, val succes: (GraphiteDataSet)
 
 
     init {
-        setting.urlList.forEach {
-            logger.debug(it)
-            val request = JsonArrayRequest(Request.Method.GET,it,null,
+        setting.serversList.forEach {
+            logger.debug(it.key)
+            val request = JsonArrayRequest(Request.Method.GET,it.value,null,
                 Response.Listener { response ->
                     val data = GraphiteDataSet.CreateFromJson(response, setting.targetIdx)
                     logger.debug(response.toString())
