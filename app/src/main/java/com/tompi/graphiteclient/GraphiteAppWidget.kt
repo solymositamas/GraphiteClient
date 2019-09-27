@@ -9,13 +9,14 @@ import android.widget.RemoteViews
 import org.slf4j.LoggerFactory
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID
-import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_IDS
-import android.widget.Toast
 import com.tompi.graphiteclient.data.GraphiteLoader
-import com.tompi.graphiteclient.data.GraphiteSettingItem
 import com.tompi.graphiteclient.data.GraphiteSettings
+import android.app.Activity
+
+
 
 const val REFRESH_ACTION = "com.tompi.graphiteclient.REFRESH_ACTION"
+const val SETTINGS_ACTION = "com.tompi.graphiteclient.SETTINGS_ACTION"
 
 class GraphiteAppWidget : AppWidgetProvider() {
 
@@ -61,7 +62,14 @@ class GraphiteAppWidget : AppWidgetProvider() {
             val settingID = SettingSelectorActivity.loadSelectedSetting(context, appWidgetId)
             updateAppWidget(context, mgr, appWidgetId, settingID)
         }
-
+        if (intent.action == SETTINGS_ACTION) {
+            val appWidgetId: Int = intent.getIntExtra(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID
+            )
+            val mgr: AppWidgetManager = AppWidgetManager.getInstance(context)
+            logger.debug("onReceive SETTINGS_ACTION id: $appWidgetId")
+        }
 
     }
 
@@ -107,13 +115,19 @@ class GraphiteAppWidget : AppWidgetProvider() {
             })
         loader.load(context)
 
-        val intent = Intent(context, javaClass)
-        intent.action = REFRESH_ACTION
-        intent.putExtra(EXTRA_APPWIDGET_ID, appWidgetId)
-
-        val pi = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val refreshIntent = Intent(context, javaClass).apply {
+            action = REFRESH_ACTION
+            putExtra(EXTRA_APPWIDGET_ID, appWidgetId)
+        }
+        val pi = PendingIntent.getBroadcast(context, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         views.setOnClickPendingIntent(R.id.refresh_button,pi)
 
+
+        val configIntent = Intent(context, SettingSelectorActivity::class.java).apply {
+            putExtra(EXTRA_APPWIDGET_ID, appWidgetId)
+        }
+        val configPendingIntent = PendingIntent.getActivity(context, appWidgetId, configIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        views.setOnClickPendingIntent(R.id.settings_button, configPendingIntent)
 
         // Instruct the widget manager to update the widget
         logger.debug("updateAppwidget: $appWidgetId")

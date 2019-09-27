@@ -37,7 +37,7 @@ data class GraphiteDataSet(val targetList: Array<GraphiteDataItem>) {
 
         fun parseTarget(array: JSONObject, targetIdx: Int): GraphiteDataItem{
             val data: String = array.getJSONArray("datapoints").getJSONArray(0)[0].toString()
-            val value = data.toDouble()
+            val value:Double = data.toDoubleOrNull() ?: 0.00001
             val targetName =
                 if(targetIdx >= 0) {
                     getTargetName(targetIdx, array.optString("target"))

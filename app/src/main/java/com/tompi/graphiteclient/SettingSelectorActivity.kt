@@ -68,10 +68,13 @@ class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnL
             mAppWidgetId = extras.getInt(
                 AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID
             )
+        } else {
+            logger.error("extras == null")
         }
 
         // If this activity was started with an intent without an app widget ID, finish with an error.
         if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            logger.error("INVALID_APPWIDGET_ID")
             finish()
             return
         }
