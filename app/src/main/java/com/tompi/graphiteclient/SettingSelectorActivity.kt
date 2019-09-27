@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.activity_setting_selector.*
 import org.slf4j.LoggerFactory
 
 import android.content.Context
+import com.tompi.graphiteclient.SettingEditorActivity.Companion.createIntent
 
 class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnListFragmentInteractionListener {
 
@@ -61,7 +62,7 @@ class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnL
     override fun onListItemEditClicked(id: String, item: GraphiteSettingItem?) {
         logger.debug("onListItemEditClicked() called with: id = [$id], item = [$item]")
 
-        val i = SettingEditorFragment.createIntent(this, id)
+        val i = createIntent(this, id)
         startActivityForResult(i, EDIT_SETTING_REQUEST)
     }
 
