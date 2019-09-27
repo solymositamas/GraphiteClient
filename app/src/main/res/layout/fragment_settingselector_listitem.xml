@@ -6,29 +6,29 @@
         android:layout_height="wrap_content">
 
     <TextView
-            android:id="@+id/textName"
+            android:id="@+id/item_number"
             android:text=""
-            tools:text="name qwef qwef qwef qwef qwef qwefc adc qwec qewrc wervc werv wervwervwerv "
-            android:layout_width="0dp"
+            tools:text="123123"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/textValue"
+            app:layout_constraintEnd_toStartOf="@id/content"
             android:layout_marginBottom="8dp"
             android:textSize="24sp"
     />
     <TextView
-            android:id="@+id/textValue"
+            android:id="@+id/content"
             android:text=""
-            tools:text="345adsf asf"
-            android:layout_width="wrap_content"
+            tools:text="http://tompi.synology.me:8013/render?target=summarize(tompi.home.*.temperature,'1hour','last')afrom=-1haformat=json"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/textName"
+            app:layout_constraintStart_toEndOf="@id/item_number"
             android:textSize="24sp"
     />
 

@@ -13,7 +13,7 @@ import android.widget.TextView
 import com.tompi.graphiteclient.data.GraphiteSettingItem
 import com.tompi.graphiteclient.data.GraphiteSettings
 
-import kotlinx.android.synthetic.main.fragment_settingselector.view.*
+import kotlinx.android.synthetic.main.fragment_settingselector_listitem.view.*
 
 class SettingSelectorFragment : Fragment() {
 
@@ -104,13 +104,15 @@ class MySettingselectorRecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fragment_settingselector, parent, false)
+            .inflate(R.layout.fragment_settingselector_listitem, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val elementAt = mValueMap.entries.elementAt(position)
-        holder.mIdView.text = elementAt.value.urlList.first()
+//        holder.mIdView.text = elementAt.value.urlList.first()
+        holder.mIdView.text = elementAt.value.targetIdx.toString()
+
         holder.mContentView.text = elementAt.value.target
 
         with(holder.mView) {
