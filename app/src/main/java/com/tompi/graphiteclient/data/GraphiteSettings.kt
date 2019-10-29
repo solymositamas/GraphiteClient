@@ -42,31 +42,45 @@ object GraphiteSettings {
 //    val target = "apps.fakesite.*.counters.requests.count"
         val target = "tompi.home.*.temperature"
         mock.put("1234", GraphiteSettingItem(
-            listOf(GraphiteServer(false, server, port))
+            listOf(GenericServer(false, server, port))
             , target))
 
         mock.put("12345", GraphiteSettingItem(
-            listOf(GraphiteServer(false, server2, port), GraphiteServer(false, server, port))
+            listOf(GenericServer(false, server2, port), GenericServer(false, server, port))
             , target))
         return mock
     }
 }
 
-data class GraphiteSettingItem(private val serverList: List<GraphiteServer>, val target: String) {
-    val targetIdx = target.split(".").indexOf("*")
-    val serversList: Map<String, String> = serverList.map {it.url to String.format("${it.url}/render?target=summarize(${target},'1hour','last')&from=-1h&format=json")
-            }.toMap()
+data class GraphiteServer(val isSecure: Boolean, val server: String, val port: String?, val target: String) {
+    val url:String
+        get() {
+            val scheme = if(isSecure) "https" else "http"
+            val portStr: String = if(port == null) "" else ":$port"
+            return String.format("${scheme}://${server}${portStr}/render?target=summarize(${target},'1hour','last')&from=-1h&format=json")
+        }
+}
 
+data class GraphiteSettingItem(private val serverList: List<GenericServer>, val target: String) {
+    val targetIdx = target.split(".").indexOf("*")
+    val servers: MutableList<GraphiteServer>
+    init {
+        val tmp = mutableListOf<GraphiteServer>()
+        serverList.forEach {
+            tmp.add(GraphiteServer(it.isSecure, it.server, it.port, target))
+        }
+        servers = tmp
+    }
 }
 
 
 
-data class GraphiteServer(val isSecure: Boolean, val server: String, val port: String?) {
-    val url:String
-    get() {
-        val scheme = if(isSecure) "https" else "http"
-        val portStr: String = if(port == null) "" else ":$port"
-        return String.format("${scheme}://${server}${portStr}")
-    }
+data class GenericServer(val isSecure: Boolean, val server: String, val port: String?) {
+//    val url:String
+//    get() {
+//        val scheme = if(isSecure) "https" else "http"
+//        val portStr: String = if(port == null) "" else ":$port"
+//        return String.format("${scheme}://${server}${portStr}")
+//    }
 }
 

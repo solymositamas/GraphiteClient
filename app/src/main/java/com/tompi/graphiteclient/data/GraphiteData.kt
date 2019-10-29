@@ -12,6 +12,11 @@ import org.slf4j.LoggerFactory
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
+/*
+
+[{"target": "summarize(tompi.home.haloszoba_virag.temperature, \"1hour\", \"last\")", "datapoints": [[null, 1569823200], [24.0, 1569826800]]}]
+
+ */
 
 data class GraphiteDataSet(val targetList: Array<GraphiteDataItem>) {
     private val created: Long = System.currentTimeMillis()
@@ -80,9 +85,9 @@ class GraphiteLoader(setting: GraphiteSettingItem, val succes: (GraphiteDataSet)
 
 
     init {
-        setting.serversList.forEach {
-            logger.debug(it.key)
-            val request = JsonArrayRequest(Request.Method.GET,it.value,null,
+        setting.servers.forEach {
+            logger.debug(it.toString())
+            val request = JsonArrayRequest(Request.Method.GET,it.url,null,
                 Response.Listener { response ->
                     val data = GraphiteDataSet.CreateFromJson(response, setting.targetIdx)
                     logger.debug(response.toString())

@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
 //        val settings = GraphiteSettingItem(false, server, port, target)
         val settings = GraphiteSettings.getMap().entries.first().value
-        logger.debug(settings.serversList.values.toString())
+        logger.debug(settings.servers.toString())
         val loader: GraphiteLoader = GraphiteLoader(settings, succes = {
             logger.debug("data: $it")
             text.setText(it.toString())

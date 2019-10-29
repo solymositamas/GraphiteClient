@@ -116,7 +116,7 @@ class MySettingselectorRecyclerViewAdapter(
 //        holder.idView.text = elementAt.value.urlList.first()
         holder.id.text = elementAt.key
 
-        holder.description.text = elementAt.value.serversList.keys.joinToString(separator = "\n")
+        holder.description.text = elementAt.value.servers.joinToString(separator = "\n")
         holder.settingsButton.setOnClickListener {
             listClickListener?.onListItemEditClicked(elementAt.key, elementAt.value)
         }
