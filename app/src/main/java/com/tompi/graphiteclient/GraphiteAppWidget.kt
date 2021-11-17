@@ -11,7 +11,6 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID
 import com.tompi.graphiteclient.data.GraphiteLoader
 import com.tompi.graphiteclient.data.GraphiteSettings
-import android.app.Activity
 
 const val REFRESH_ACTION = "com.tompi.graphiteclient.REFRESH_ACTION"
 const val SETTINGS_ACTION = "com.tompi.graphiteclient.SETTINGS_ACTION"
@@ -53,7 +52,7 @@ class GraphiteAppWidget : AppWidgetProvider() {
         if (intent.action == REFRESH_ACTION) {
             val mgr: AppWidgetManager = AppWidgetManager.getInstance(context)
             val appWidgetId: Int = intent.getIntExtra(
-                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID
             )
             logger.debug("onReceive refresh id: $appWidgetId")
@@ -62,7 +61,7 @@ class GraphiteAppWidget : AppWidgetProvider() {
         }
         if (intent.action == SETTINGS_ACTION) {
             val appWidgetId: Int = intent.getIntExtra(
-                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID
             )
             val mgr: AppWidgetManager = AppWidgetManager.getInstance(context)
@@ -85,7 +84,7 @@ class GraphiteAppWidget : AppWidgetProvider() {
         }
     }
 
-    internal fun updateAppWidget(
+    private fun updateAppWidget(
         context: Context, appWidgetManager: AppWidgetManager,
         appWidgetId: Int,
         settingID: String
@@ -96,10 +95,9 @@ class GraphiteAppWidget : AppWidgetProvider() {
         views.setTextViewText(R.id.appwidget_text, "ooOoOooo $appWidgetId")
 
 
-        val settings = GraphiteSettings.getSettingsByID(settingID)
-        if (settings == null) return
+        val settings = GraphiteSettings.getSettingsByID(settingID) ?: return
 
-        val loader: GraphiteLoader = GraphiteLoader(settings, succes = {
+        val loader = GraphiteLoader(settings, succes = {
             logger.debug("update success :$appWidgetId")
             views.setTextViewText(R.id.appwidget_text, it.toString())
             views.setTextViewText(R.id.appwidget_text_timestamp, it.getFormattedDate())
@@ -117,14 +115,14 @@ class GraphiteAppWidget : AppWidgetProvider() {
             action = REFRESH_ACTION
             putExtra(EXTRA_APPWIDGET_ID, appWidgetId)
         }
-        val pi = PendingIntent.getBroadcast(context, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pi = PendingIntent.getBroadcast(context, appWidgetId, refreshIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         views.setOnClickPendingIntent(R.id.refresh_button,pi)
 
 
         val configIntent = Intent(context, SettingSelectorActivity::class.java).apply {
             putExtra(EXTRA_APPWIDGET_ID, appWidgetId)
         }
-        val configPendingIntent = PendingIntent.getActivity(context, appWidgetId, configIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val configPendingIntent = PendingIntent.getActivity(context, appWidgetId, configIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         views.setOnClickPendingIntent(R.id.settings_button, configPendingIntent)
 
         // Instruct the widget manager to update the widget

@@ -22,14 +22,14 @@ class SettingEditorFragment : Fragment() {
     private lateinit var toolbar: Toolbar
     private lateinit var settingsId: String
 
-    lateinit var server1SecureSwitch: SwitchCompat
-    lateinit var server2SecureSwitch: SwitchCompat
-    lateinit var server1AdressEdit: EditText
-    lateinit var server2AdressEdit: EditText
-    lateinit var server1PortEdit: EditText
-    lateinit var server2PortEdit: EditText
-    lateinit var targetEditor: EditText
-    lateinit var urlFeedback: TextView
+    private lateinit var server1SecureSwitch: SwitchCompat
+    private lateinit var server2SecureSwitch: SwitchCompat
+    private lateinit var server1AdressEdit: EditText
+    private lateinit var server2AdressEdit: EditText
+    private lateinit var server1PortEdit: EditText
+    private lateinit var server2PortEdit: EditText
+    private lateinit var targetEditor: EditText
+    private lateinit var urlFeedback: TextView
 
     companion object {
         private val logger = LoggerFactory.getLogger("SettingEditorFragment")!!
@@ -84,7 +84,7 @@ class SettingEditorFragment : Fragment() {
         return view
     }
 
-    fun setupEditor(settingItem: GraphiteSettingItem?) {
+    private fun setupEditor(settingItem: GraphiteSettingItem?) {
         if(settingItem == null) {
             logger.debug("new item")
             //TODO: create empty
@@ -102,7 +102,7 @@ class SettingEditorFragment : Fragment() {
         }
     }
 
-    fun refreshUrlFeedback() {
+    private fun refreshUrlFeedback() {
         val data = collectData()
         urlFeedback.text = data.servers.joinToString(separator = "\n") { it.url }
     }
