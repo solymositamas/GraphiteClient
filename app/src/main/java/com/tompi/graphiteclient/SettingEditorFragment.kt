@@ -3,7 +3,6 @@ package com.tompi.graphiteclient
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,18 +10,17 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import com.tompi.graphiteclient.SettingEditorActivity.Companion.SETTING_ID
 import com.tompi.graphiteclient.data.GenericServer
 import com.tompi.graphiteclient.data.GraphiteServer
 import com.tompi.graphiteclient.data.GraphiteSettingItem
 import com.tompi.graphiteclient.data.GraphiteSettings
-
 import org.slf4j.LoggerFactory
 
 class SettingEditorFragment : Fragment() {
     private lateinit var toolbar: Toolbar
     private lateinit var settingsId: String
-
 
     lateinit var server1SecureSwitch: SwitchCompat
     lateinit var server2SecureSwitch: SwitchCompat

@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
 
-
 class MainActivity : AppCompatActivity() {
 
     companion object {
@@ -60,7 +59,6 @@ class MainActivity : AppCompatActivity() {
             progressBar.visibility = View.GONE
             button.visibility = View.VISIBLE
 
-
             recyclerView.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(this@MainActivity)
@@ -68,10 +66,7 @@ class MainActivity : AppCompatActivity() {
                 adapter = GraphiteDataAdapter(it) {
                     //TODO: onclick
                 }
-
             }
-
-
         }, fail = {
             logger.error("FAIL: $it")
             progressBar.visibility = View.GONE

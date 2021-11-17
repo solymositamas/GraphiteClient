@@ -43,7 +43,6 @@ class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnL
         }
     }
 
-
     override fun onListItemClicked(id: String, item: GraphiteSettingItem?) {
         logger.debug("onListItemClicked() called with: id = [$id], item = [$item]")
 
@@ -91,6 +90,4 @@ class SettingSelectorActivity : AppCompatActivity(), SettingSelectorFragment.OnL
 //            return
 //        }
     }
-
-
 }

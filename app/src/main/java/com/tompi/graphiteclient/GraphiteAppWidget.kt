@@ -13,8 +13,6 @@ import com.tompi.graphiteclient.data.GraphiteLoader
 import com.tompi.graphiteclient.data.GraphiteSettings
 import android.app.Activity
 
-
-
 const val REFRESH_ACTION = "com.tompi.graphiteclient.REFRESH_ACTION"
 const val SETTINGS_ACTION = "com.tompi.graphiteclient.SETTINGS_ACTION"
 
@@ -133,7 +131,5 @@ class GraphiteAppWidget : AppWidgetProvider() {
         logger.debug("updateAppwidget: $appWidgetId")
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
-
-
 }
 
